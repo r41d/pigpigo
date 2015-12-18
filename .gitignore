@@ -28,3 +28,5 @@ _testmain.go
 *.csr
 *.pem
 *.crt
+
+ext/wiringPi

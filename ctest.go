@@ -1,4 +1,5 @@
 package main // code.bitsetter.de/tk/gpigo
+//go:generate ./ext/makelib.sh
 
 import ( 
 	"fmt"
