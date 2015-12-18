@@ -9,5 +9,4 @@ git pull
 popd
 
 make -j5 -C ext/wiringPi/wiringPi static
-cp ext/wiringPi/wiringPi/*.a ext/
 

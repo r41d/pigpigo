@@ -6,9 +6,26 @@ import (
 	"log"
 )
 
-// int sum(int a, int b) {
-//   return a+b;
-// }
+/*
+#cgo CFLAGS: -Iext/wiringPi/wiringPi
+#cgo LDFLAGS: -Lext/wiringPi/wiringPi -lwiringPi
+#include <stdio.h>
+#include "wiringPi.h"
+
+void wpitest() {
+	printf("setup...\n");
+    wiringPiSetup();
+    pinMode(0, INPUT);
+    printf("waiting...\n");
+    delay(3000);
+    printf("done.\n");
+}
+
+ int sum(int a, int b) {
+   return a+b;
+ }
+
+*/
 import "C"
 
 func main() {
@@ -17,4 +34,5 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println("hi", s )
+	_, err = C.wpitest()
 }
