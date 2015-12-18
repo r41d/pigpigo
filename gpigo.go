@@ -1,7 +1,7 @@
 package main // code.bitsetter.de/tk/gpigo
 //go:generate ./ext/makelib.sh
 
-import ( 
+import (
 	"fmt"
 	"log"
 )
@@ -15,9 +15,14 @@ import (
 void wpitest() {
 	printf("setup...\n");
     wiringPiSetup();
-    pinMode(0, INPUT);
-    printf("waiting...\n");
-    delay(3000);
+    pinMode(1, OUTPUT);
+	int i;
+    for (i=0; i<10; i++) {
+		digitalWrite(1, HIGH);
+		delay(200);
+		digitalWrite(1, LOW);
+		delay(200);
+	}
     printf("done.\n");
 }
 
