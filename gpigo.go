@@ -1,10 +1,9 @@
-package main // code.bitsetter.de/tk/gpigo
+package gpigo // code.bitsetter.de/tk/gpigo
 //go:generate ./ext/makelib.sh
 
-
 /*
-#cgo CFLAGS: -Iext/wiringPi/wiringPi
-#cgo LDFLAGS: -Lext/wiringPi/wiringPi -lwiringPi
+#cgo CFLAGS: -I${SRCDIR}/ext/wiringPi/wiringPi
+#cgo LDFLAGS: -L${SRCDIR}/ext/wiringPi/wiringPi -lwiringPi
 #include "wiringPi.h"
 */
 import "C"
@@ -17,37 +16,56 @@ import "C"
 // analogRead(int pin); // need special board
 // analogWrite(int pin, int value); // need special board
 
-func gpigoInit() (err error) {
+func Initialize() (err error) {
 	_, err = C.wiringPiSetup()
 	return
 }
 
-type pinMode int
+// pin modes – make them private so they cannot be used on other
+// functions accidentially
+type pMode int
+
 const (
-	INPUT pinMode = iota
+	INPUT pMode = iota
 	OUTPUT
 	PWM_OUTPUT
 	GPIO_CLOCK
 )
+
+// export "enum" as interface
+type PMode interface {
+	PMode() pMode
+}
+
+// ... and wrap the enum
+func (m pMode) PMode() pMode { return m }
+
 // void pinMode(int pin, int mode);
 //  INPUT 0
 //  OUTPUT 1
 //  PWM_OUTPUT 2
 //  GPIO_CLOCK 3
-func pinMode(pin int, mode int) (err error) {
-	_, err = C.pinMode(C.int(pin), C.int(mode))
+func PinMode(pin int, mode PMode) (err error) {
+	_, err = C.pinMode(C.int(pin), C.int(mode.PMode()))
 	return
 }
+
+type pud int
+
+const (
+	OFF = iota
+	DOWN
+	UP
+)
 
 // void pullUpDnControl(int pin, int pud);
 //  PUD_OFF 0
 //  PUD_DOWN 1
 //  PUD_UP 2
-func pullUpDnControl(int pin, int pud) (err error) {
-	_, err = C.pullUpDnControl(C.int(pin), C.int(pud)
+func pullUpDnControl(pin int, p pud) (err error) {
+	_, err = C.pullUpDnControl(C.int(pin), C.int(p))
 	return
 }
-
 
 // void digitalWrite(int pin, int value); HIGH, LOW
 func dWrite(pin, value int) error {
@@ -60,15 +78,14 @@ func delay(ms uint) (err error) {
 	return
 }
 
-func main() {
-	gpigoInit()
-	pinMode(1, 1) //output
-	for i := 0; i<10; i++ {
+func TestGPIGO() {
+	Initialize()
+	PinMode(1, OUTPUT) //output
+	for i := 0; i < 10; i++ {
 		dWrite(1, 1)
 		delay(100)
 		dWrite(1, 0)
 		delay(300)
 	}
-//	_, err = C.wpitest()
+	//	_, err = C.wpitest()
 }
-
