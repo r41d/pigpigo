@@ -9,7 +9,6 @@ package main // code.bitsetter.de/tk/gpigo
 */
 import "C"
 
-// void pullUpDnControl(int pin, int pud);
 // void pwmWrite(int pin, int value);
 //   0-1024
 //   not when in Sys mode (wiringPiSetup*)
@@ -23,11 +22,32 @@ func gpigoInit() (err error) {
 	return
 }
 
+type pinMode int
+const (
+	INPUT pinMode = iota
+	OUTPUT
+	PWM_OUTPUT
+	GPIO_CLOCK
+)
 // void pinMode(int pin, int mode);
+//  INPUT 0
+//  OUTPUT 1
+//  PWM_OUTPUT 2
+//  GPIO_CLOCK 3
 func pinMode(pin int, mode int) (err error) {
 	_, err = C.pinMode(C.int(pin), C.int(mode))
 	return
 }
+
+// void pullUpDnControl(int pin, int pud);
+//  PUD_OFF 0
+//  PUD_DOWN 1
+//  PUD_UP 2
+func pullUpDnControl(int pin, int pud) (err error) {
+	_, err = C.pullUpDnControl(C.int(pin), C.int(pud)
+	return
+}
+
 
 // void digitalWrite(int pin, int value); HIGH, LOW
 func dWrite(pin, value int) error {
