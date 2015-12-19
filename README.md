@@ -15,7 +15,7 @@ Build:
 
    Don't be confused about the repo url. This will redirect to this github repo.
 
-2. fetch and build dependencies:
+2. fetch and build dependencies – If you happen to have wiringPi lib already installed on your rpi you do not need execute step 2.
 
 	go generate
 
