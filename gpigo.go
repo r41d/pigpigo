@@ -1,21 +1,19 @@
-package gpigo // code.bitsetter.de/tk/gpigo
+// Package gpigo provides GPIO support on the raspberry pi (2).
+// It encapsulates the wiringPi C library (see http://wiringpi.com).
+// At the current stage, only basic functions of the library are implemented.
+package gpigo //code.bitsetter.de/tk/gpigo
 //go:generate ./ext/makelib.sh
 
 /*
 #cgo CFLAGS: -I${SRCDIR}/ext/wiringPi/wiringPi
 #cgo LDFLAGS: -L${SRCDIR}/ext/wiringPi/wiringPi -lwiringPi
 #include "wiringPi.h"
+// no glue code needed at this point.
+// we use the librarys functions directly.
 */
 import "C"
 
-// void pwmWrite(int pin, int value);
-//   0-1024
-//   not when in Sys mode (wiringPiSetup*)
-//   pin1 (BCM_GPIO18, phys 12)
-// int digitalRead(int pin); HIGH/LOW 1/0
-// analogRead(int pin); // need special board
-// analogWrite(int pin, int value); // need special board
-
+// Initialize the GPIO interface
 func Initialize() (err error) {
 	_, err = C.wiringPiSetup()
 	return
@@ -23,30 +21,46 @@ func Initialize() (err error) {
 
 // pin modes – make them private so they cannot be used on other
 // functions accidentially
-type pMode int
+type pinMode int
 
 const (
-	INPUT pMode = iota
+	INPUT pinMode = iota
 	OUTPUT
 	PWM_OUTPUT
 	GPIO_CLOCK
 )
 
 // export "enum" as interface
-type PMode interface {
-	PMode() pMode
+type PinMode interface {
+	Base() pinMode
 }
 
 // ... and wrap the enum
-func (m pMode) PMode() pMode { return m }
+func (m pinMode) Base() pinMode { return m }
 
+// Pin Values
+type pinValue int
+
+const (
+	LOW pinValue = iota
+	HIGH
+)
+
+type PinValue interface {
+	Base() pinValue
+}
+
+func (v pinValue) Base() pinValue { return v }
+
+// Sets the configuration of a pin to be one of
+//  INPUT
+//  OUTPUT
+//  PWM_OUTPUT
+//	GPIO_CLOCK
+// Note: PWN is not usable on every pin. Check gpio docs.
 // void pinMode(int pin, int mode);
-//  INPUT 0
-//  OUTPUT 1
-//  PWM_OUTPUT 2
-//  GPIO_CLOCK 3
-func PinMode(pin int, mode PMode) (err error) {
-	_, err = C.pinMode(C.int(pin), C.int(mode.PMode()))
+func SetPinMode(pin int, mode PinMode) (err error) {
+	_, err = C.pinMode(C.int(pin), C.int(mode.Base()))
 	return
 }
 
@@ -67,25 +81,38 @@ func pullUpDnControl(pin int, p pud) (err error) {
 	return
 }
 
-// void digitalWrite(int pin, int value); HIGH, LOW
-func dWrite(pin, value int) error {
-	_, err := C.digitalWrite(C.int(pin), C.int(value))
+// Sets the value of a pins output to the given value,
+// assuming the pin is configured as an output accordingly.
+func WritePin(pin int, value PinValue) error {
+	// [void digitalWrite(int pin, int value);]
+	_, err := C.digitalWrite(C.int(pin), C.int(value.Base()))
 	return err
 }
 
-func delay(ms uint) (err error) {
+// Delays thread execution for the given amount of milliseconds.
+// This is done in a native way using the wiringPi library.
+// TODO Check if this is a CPU hog!
+func Delay(ms uint) (err error) {
 	_, err = C.delay(C.uint(ms))
 	return
 }
 
+// void pwmWrite(int pin, int value);
+//   0-1024
+//   not when in Sys mode (wiringPiSetup*)
+//   pin1 (BCM_GPIO18, phys 12)
+// int digitalRead(int pin); HIGH/LOW 1/0
+// analogRead(int pin); // need special board
+// analogWrite(int pin, int value); // need special board
+
 func TestGPIGO() {
 	Initialize()
-	PinMode(1, OUTPUT) //output
+	SetPinMode(1, OUTPUT) //output
 	for i := 0; i < 10; i++ {
-		dWrite(1, 1)
-		delay(100)
-		dWrite(1, 0)
-		delay(300)
+		WritePin(1, HIGH)
+		Delay(100)
+		WritePin(1, LOW)
+		Delay(300)
 	}
 	//	_, err = C.wpitest()
 }
