@@ -2,16 +2,24 @@
 // It encapsulates the wiringPi C library (see http://wiringpi.com).
 // At the current stage, only basic functions of the library are implemented.
 package gpigo //code.bitsetter.de/tk/gpigo
+
+// Automatically fetch and build wiringPi:
 //go:generate ./ext/makelib.sh
 
 /*
 #cgo CFLAGS: -I${SRCDIR}/ext/wiringPi/wiringPi
 #cgo LDFLAGS: -L${SRCDIR}/ext/wiringPi/wiringPi -lwiringPi
 #include "wiringPi.h"
-// no glue code needed at this point.
-// we use the librarys functions directly.
+
+extern void callback(int pin);
+
+static inline void glue(int pin, int mode, void* func) {
+	callback(pin);
+}
 */
 import "C"
+
+import "unsafe"
 
 // Initialize the GPIO interface
 func Initialize() (err error) {
@@ -66,10 +74,40 @@ func Delay(ms uint) (err error) {
 	return
 }
 
+type InterruptHandler interface {
+	Handle(value int)
+}
+
+//export callback
+func callback(pin C.int) {
+	i := myMap[int(pin)]
+	if i != nil {
+		go i.Handle(int(pin))
+	}
+}
+
+// keep stack pointer in order to avoid reference to be gc'ed
+var myMap = make(map[int]InterruptHandler)
+var myCallback = callback
+
+// Registers a func to be called on an Interrupt.
+func OnEvent(pin int, mode INT, i InterruptHandler) (err error) {
+	if i == nil {
+		delete(myMap, pin)
+	} else {
+		myMap[pin] = i
+	}
+	_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback))
+	return
+}
+
+//__________________________________________
+// TODO
+// Implement the following basic functions:
+//
 // void pwmWrite(int pin, int value);
 //   0-1024
 //   not when in Sys mode (wiringPiSetup*)
 //   pin1 (BCM_GPIO18, phys 12)
-
 // analogRead(int pin); // need special board
 // analogWrite(int pin, int value); // need special board
