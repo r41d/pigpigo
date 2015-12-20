@@ -11,10 +11,11 @@ package gpigo //code.bitsetter.de/tk/gpigo
 #cgo LDFLAGS: -L${SRCDIR}/ext/wiringPi/wiringPi -lwiringPi
 #include "wiringPi.h"
 
-extern void callback(int pin);
+//extern void callback(int pin);
 
 static inline void glue(int pin, int mode, void* func) {
-	callback(pin);
+	wiringPiISR(pin, mode, func);
+	//callback(pin);
 }
 */
 import "C"
