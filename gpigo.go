@@ -12,11 +12,11 @@ package gpigo //code.bitsetter.de/tk/gpigo
 #include <stdio.h>
 #include "wiringPi.h"
 
-//extern void callback(int pin);
+extern void callback();
 
 static inline void glue(int pin, int mode, void* func) {
 	printf("C: setting up isr\n");
-	wiringPiISR(pin, mode, func);
+	wiringPiISR(pin, mode, &callback);
 	//callback(pin);
 }
 */
@@ -85,14 +85,14 @@ type InterruptHandler interface {
 }
 
 //export callback
-func callback(pin C.int) {
+func callback() {
 	log.Println("Go: Callback")
-	i := myMap[int(pin)]
-	if i != nil {
-		go i.Handle(int(pin))
-	} else {
-		log.Println("Go: OUCH, no Handler for ", pin)
-	}
+	//i := myMap[int(pin)]
+	//if i != nil {
+	//	go i.Handle(int(pin))
+	//} else {
+	//	log.Println("Go: OUCH, no Handler for ", pin)
+	//}
 }
 
 // keep stack pointer in order to avoid reference to be gc'ed
