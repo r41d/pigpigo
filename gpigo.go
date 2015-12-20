@@ -9,18 +9,23 @@ package gpigo //code.bitsetter.de/tk/gpigo
 /*
 #cgo CFLAGS: -I${SRCDIR}/ext/wiringPi/wiringPi
 #cgo LDFLAGS: -L${SRCDIR}/ext/wiringPi/wiringPi -lwiringPi
+#include <stdio.h>
 #include "wiringPi.h"
 
 //extern void callback(int pin);
 
 static inline void glue(int pin, int mode, void* func) {
+	printf("C: setting up isr\n");
 	wiringPiISR(pin, mode, func);
 	//callback(pin);
 }
 */
 import "C"
 
-import "unsafe"
+import (
+	"log"
+	"unsafe"
+)
 
 // Initialize the GPIO interface
 func Initialize() (err error) {
@@ -81,9 +86,12 @@ type InterruptHandler interface {
 
 //export callback
 func callback(pin C.int) {
+	log.Println("Go: Callback")
 	i := myMap[int(pin)]
 	if i != nil {
 		go i.Handle(int(pin))
+	} else {
+		log.Println("Go: OUCH, no Handler for ", pin)
 	}
 }
 
