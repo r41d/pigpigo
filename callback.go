@@ -19,17 +19,36 @@ extern void callback09();
 
 // only static inline functions are allowed in cgo
 // when exporting go functions.
-static inline void glue(int pin, int mode, void* func) {
+
+static inline void unsetintr(int pin, int mode) {
+	printf("C: unsetting isr\n");
+	wiringPiISR(pin, mode, NULL);
+	printf("C: unsetting isr done\n");
+}
+
+static inline void setintr(int pin, int mode) {
 	printf("C: setting up isr\n");
-	wiringPiISR(pin, mode, func);
+	switch(pin) {
+		case 0: wiringPiISR(pin, mode, &callback00); break;
+		case 1: wiringPiISR(pin, mode, &callback01); break;
+		case 2: wiringPiISR(pin, mode, &callback02); break;
+		case 3: wiringPiISR(pin, mode, &callback03); break;
+		case 4: wiringPiISR(pin, mode, &callback04); break;
+		case 5: wiringPiISR(pin, mode, &callback05); break;
+		case 6: wiringPiISR(pin, mode, &callback06); break;
+		case 7: wiringPiISR(pin, mode, &callback07); break;
+		case 8: wiringPiISR(pin, mode, &callback08); break;
+		case 9: wiringPiISR(pin, mode, &callback09); break;
+		default: unsetintr(pin, mode); break;
+	}
 	printf("C: setup isr done\n");
 }
+
 */
 import "C"
 
 import (
 	"log"
-	"unsafe"
 )
 
 // i will never write redundant code again ...
@@ -89,33 +108,10 @@ var myMap = make(map[int]InterruptHandler)
 func OnEvent(pin int, mode INT, i InterruptHandler) (err error) {
 	if i == nil {
 		delete(myMap, pin)
-		_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(nil))
+		_, err = C.unsetintr(C.int(pin), C.int(mode.Base()))
 	} else {
 		myMap[pin] = i
-		switch pin {
-		case 0:
-			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback00))
-		case 1:
-			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback01))
-		case 2:
-			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback02))
-		case 3:
-			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback03))
-		case 4:
-			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback04))
-		case 5:
-			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback05))
-		case 6:
-			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback06))
-		case 7:
-			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback07))
-		case 8:
-			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback08))
-		case 9:
-			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback09))
-		default:
-			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(nil))
-		}
+		_, err = C.setintr(C.int(pin), C.int(mode.Base()))
 	}
 	return
 }
