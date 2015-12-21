@@ -32,6 +32,11 @@ import (
 	"unsafe"
 )
 
+// i will never write redundant code again ...
+// i will never write redundant code again ...
+// i will never write redundant code again ...
+// i will never write redundant code again ...
+
 //export callback00
 func callback00() { cb(0) }
 
@@ -72,6 +77,15 @@ var myCallbackMap map[int]func()
 func Init() {
 	myCallbackMap = make(map[int]func())
 	myCallbackMap[0] = callback00
+	myCallbackMap[1] = callback01
+	myCallbackMap[2] = callback02
+	myCallbackMap[3] = callback03
+	myCallbackMap[4] = callback04
+	myCallbackMap[5] = callback05
+	myCallbackMap[6] = callback06
+	myCallbackMap[7] = callback07
+	myCallbackMap[8] = callback08
+	myCallbackMap[9] = callback09
 }
 
 var myMap = make(map[int]InterruptHandler)
