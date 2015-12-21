@@ -72,21 +72,16 @@ func cb(pin int) {
 }
 
 // keep stack pointer in order to avoid reference to be gc'ed
-var myCallbackMap map[int]func()
-
-func Init() {
-	myCallbackMap = make(map[int]func())
-	myCallbackMap[0] = callback00
-	myCallbackMap[1] = callback01
-	myCallbackMap[2] = callback02
-	myCallbackMap[3] = callback03
-	myCallbackMap[4] = callback04
-	myCallbackMap[5] = callback05
-	myCallbackMap[6] = callback06
-	myCallbackMap[7] = callback07
-	myCallbackMap[8] = callback08
-	myCallbackMap[9] = callback09
-}
+var myCallback00 = callback00
+var myCallback01 = callback01
+var myCallback02 = callback02
+var myCallback03 = callback03
+var myCallback04 = callback04
+var myCallback05 = callback05
+var myCallback06 = callback06
+var myCallback07 = callback07
+var myCallback08 = callback08
+var myCallback09 = callback09
 
 var myMap = make(map[int]InterruptHandler)
 
@@ -94,10 +89,33 @@ var myMap = make(map[int]InterruptHandler)
 func OnEvent(pin int, mode INT, i InterruptHandler) (err error) {
 	if i == nil {
 		delete(myMap, pin)
+		_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(nil))
 	} else {
 		myMap[pin] = i
+		switch pin {
+		case 0:
+			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback00))
+		case 1:
+			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback01))
+		case 2:
+			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback02))
+		case 3:
+			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback03))
+		case 4:
+			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback04))
+		case 5:
+			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback05))
+		case 6:
+			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback06))
+		case 7:
+			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback07))
+		case 8:
+			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback08))
+		case 9:
+			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback09))
+		default:
+			_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(nil))
+		}
 	}
-	var mycb = myCallbackMap[pin]
-	_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&mycb))
 	return
 }
