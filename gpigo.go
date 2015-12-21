@@ -9,23 +9,9 @@ package gpigo //code.bitsetter.de/tk/gpigo
 /*
 #cgo CFLAGS: -I${SRCDIR}/ext/wiringPi/wiringPi
 #cgo LDFLAGS: -L${SRCDIR}/ext/wiringPi/wiringPi -lwiringPi
-#include <stdio.h>
 #include "wiringPi.h"
-
-extern void callback();
-
-static inline void glue(int pin, int mode, void* func) {
-	printf("C: setting up isr\n");
-	wiringPiISR(pin, mode, &callback);
-	//callback(pin);
-}
 */
 import "C"
-
-import (
-	"log"
-	"unsafe"
-)
 
 // Initialize the GPIO interface
 func Initialize() (err error) {
@@ -82,32 +68,6 @@ func Delay(ms uint) (err error) {
 
 type InterruptHandler interface {
 	Handle(value int)
-}
-
-//export callback
-func callback() {
-	log.Println("Go: Callback")
-	//i := myMap[int(pin)]
-	//if i != nil {
-	//	go i.Handle(int(pin))
-	//} else {
-	//	log.Println("Go: OUCH, no Handler for ", pin)
-	//}
-}
-
-// keep stack pointer in order to avoid reference to be gc'ed
-var myMap = make(map[int]InterruptHandler)
-var myCallback = callback
-
-// Registers a func to be called on an Interrupt.
-func OnEvent(pin int, mode INT, i InterruptHandler) (err error) {
-	if i == nil {
-		delete(myMap, pin)
-	} else {
-		myMap[pin] = i
-	}
-	_, err = C.glue(C.int(pin), C.int(mode.Base()), unsafe.Pointer(&myCallback))
-	return
 }
 
 //__________________________________________
