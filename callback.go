@@ -1,5 +1,10 @@
 package gpigo // code.bitsetter.de/tk/gpigo
 
+// I will never write redundant code again ...
+// I will never write redundant code again ...
+// I will never write redundant code again ...
+// I will never write redundant code again ...
+
 /*
 #cgo CFLAGS: -I${SRCDIR}/ext/wiringPi/wiringPi
 #cgo LDFLAGS: -L${SRCDIR}/ext/wiringPi/wiringPi -lwiringPi
@@ -51,11 +56,6 @@ import (
 	"log"
 )
 
-// i will never write redundant code again ...
-// i will never write redundant code again ...
-// i will never write redundant code again ...
-// i will never write redundant code again ...
-
 //export callback00
 func callback00() { cb(0) }
 
@@ -88,19 +88,8 @@ func callback09() { cb(9) }
 
 func cb(pin int) {
 	log.Println("interrupt on pin ", pin)
+	myMap[pin].Handle(pin)
 }
-
-// keep stack pointer in order to avoid reference to be gc'ed
-var myCallback00 = callback00
-var myCallback01 = callback01
-var myCallback02 = callback02
-var myCallback03 = callback03
-var myCallback04 = callback04
-var myCallback05 = callback05
-var myCallback06 = callback06
-var myCallback07 = callback07
-var myCallback08 = callback08
-var myCallback09 = callback09
 
 var myMap = make(map[int]InterruptHandler)
 
