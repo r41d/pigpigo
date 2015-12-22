@@ -52,10 +52,6 @@ static inline void setintr(int pin, int mode) {
 */
 import "C"
 
-import (
-	"log"
-)
-
 //export callback00
 func callback00() { cb(0) }
 
@@ -87,7 +83,6 @@ func callback08() { cb(8) }
 func callback09() { cb(9) }
 
 func cb(pin int) {
-	log.Println("interrupt on pin ", pin)
 	myMap[pin].Handle(pin)
 }
 
