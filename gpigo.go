@@ -66,6 +66,12 @@ func Delay(ms uint) (err error) {
 	return
 }
 
+// TODO
+func SetPwm(pin int, val int) (err error) {
+	_, err = C.pwmWrite(C.int(pin), C.int(val))
+	return
+}
+
 type InterruptHandler interface {
 	Handle(value int)
 }
