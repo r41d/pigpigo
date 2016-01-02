@@ -1,14 +1,8 @@
-package gpigo //code.bitsetter.de/tk/gpigo
+package pigpiogo
 
-type pwmMode int
+type PwmMode int
 
 const (
-	PWM_MS pwmMode = iota
+	PWM_MS PwmMode = iota
 	PWM_BAL
 )
-
-type PWM interface {
-	Base() pwmMode
-}
-
-func (m pwmMode) Base() pwmMode { return m }

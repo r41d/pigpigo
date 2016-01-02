@@ -1,20 +1,16 @@
-package gpigo //code.bitsetter.de/tk/gpigo
+package pigpiogo
 
 // pin modes – make them private so they cannot be used on other
 // functions accidentially
-type pinMode int
+type PinMode int
 
 const (
-	MODE_INPUT pinMode = iota
-	MODE_OUTPUT
-	MODE_PWM_OUTPUT
-	MODE_GPIO_CLOCK
+	PI_INPUT  PinMode = 0
+	PI_OUTPUT         = 1
+	PI_ALT0           = 4
+	PI_ALT1           = 5
+	PI_ALT2           = 6
+	PI_ALT3           = 7
+	PI_ALT4           = 3
+	PI_ALT5           = 2
 )
-
-// export "enum" as interface
-type MODE interface {
-	Base() pinMode
-}
-
-// ... and wrap the enum
-func (m pinMode) Base() pinMode { return m }

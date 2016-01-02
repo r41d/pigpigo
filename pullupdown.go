@@ -1,15 +1,9 @@
-package gpigo //code.bitsetter.de/tk/gpigo
+package pigpiogo
 
-type pullupdown int
+type Pullupdown int
 
 const (
-	PUD_OFF pullupdown = iota
-	PUD_DOWN
-	PUD_UP
+	PI_PUD_OFF  Pullupdown = 0
+	PI_PUD_DOWN            = 1
+	PI_PUD_UP              = 2
 )
-
-type PUD interface {
-	Base() pullupdown
-}
-
-func (p pullupdown) Base() pullupdown { return p }

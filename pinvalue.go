@@ -1,15 +1,9 @@
-package gpigo //code.bitsetter.de/tk/gpigo
+package pigpiogo
 
 // Pin Values
-type pinValue int
+type PinValue int
 
 const (
-	PIN_LOW pinValue = iota
-	PIN_HIGH
+	PI_LOW  PinValue = 0
+	PI_HIGH          = 1
 )
-
-type PIN interface {
-	Base() pinValue
-}
-
-func (v pinValue) Base() pinValue { return v }

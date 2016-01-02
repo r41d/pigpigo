@@ -1,4 +1,4 @@
-package gpigo //code.bitsetter.de/tk/gpigo
+package pigpiogo
 
 type intType int
 
