@@ -72,6 +72,12 @@ func SetPwm(pin int, dutycycle int) (err error) {
 	return
 }
 
+func SetPwmRange(pin int, rrange int) (err error) {
+	//int set_PWM_range(int pi, unsigned user_gpio, unsigned range)
+	_, err = C.set_PWM_range(pi, C.uint(pin), C.uint(rrange))
+	return
+}
+
 type InterruptHandler interface {
 	Handle(value int)
 }
