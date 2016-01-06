@@ -1,8 +1,16 @@
 package pigpiogo
 
-type PwmMode int
+type pwmMode int
 
 const (
-	PWM_MS PwmMode = iota
+	PWM_MS pwmMode = iota
 	PWM_BAL
 )
+
+type PWM interface {
+	Base() pwmMode
+}
+
+func (pwm pwmMode) Base() pwmMode {
+	return pwm
+}
