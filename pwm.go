@@ -1,16 +1,31 @@
 package gpigo
 
-type pwmMode int
+/*
+ * interface
+ */
+
+// This configuration is wiringPi-specific
+
+/*
+ * pigpio
+ */
+
+// Nothing to put here
+
+/*
+ * wiringPi
+ */
+type wp_pwmMode int
 
 const (
-	PWM_MS pwmMode = iota
-	PWM_BAL
+	WP_PWM_MODE_MS wp_pwmMode = iota
+	WP_PWM_MODE_BAL
 )
 
 type PWM interface {
-	Base() pwmMode
+	Base() wp_pwmMode
 }
 
-func (pwm pwmMode) Base() pwmMode {
+func (pwm wp_pwmMode) Base() wp_pwmMode {
 	return pwm
 }

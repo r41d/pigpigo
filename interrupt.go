@@ -1,16 +1,33 @@
 package gpigo
 
-type intType int
+/*
+ * interface
+ */
 
-const (
-	INT_SETUP   intType = iota // Interrupts already set up
-	INT_FALLING                // Interrupt on falling edge of signal
-	INT_RAISING                // Interrupt on raising edge of signal
-	INT_BOTH                   // Interrupt on both edges
+// This configuration is wiringPi-specific
+
+/*
+ * pigpio
+ */
+
+// Nothing to put here
+
+/*
+ * wiringPi
+ */
+type wp_intType int
+
+const ( // from wiringPi.h
+	WP_INT_EDGE_SETUP   wp_intType = iota // Interrupts already set up
+	WP_INT_EDGE_FALLING                   // Interrupt on falling edge of signal
+	WP_INT_EDGE_RISING                    // Interrupt on raising edge of signal
+	WP_INT_EDGE_BOTH                      // Interrupt on both edges
 )
 
 type INT interface {
-	Base() intType
+	Base() wp_intType
 }
 
-func (i intType) Base() intType { return i }
+func (i wp_intType) Base() wp_intType {
+	return i
+}
