@@ -4,11 +4,10 @@ package gpigo
 // Automatically fetch and build pigpio:
 //go:generate ./ext/makelib_wiringpi.sh
 
-/*
-//#cgo CFLAGS: -I${SRCDIR}/ext/wiringpi
-//#cgo LDFLAGS: -L${SRCDIR}/ext/wiringpi -Wall -pthread -lwiringpi -lrt
-//#include <wiringpi.h>
-*/
+//#cgo CFLAGS: -I${SRCDIR}/ext/wiringPi/wiringPi
+//#cgo LDFLAGS: -L${SRCDIR}/ext/wiringPi/wiringPi -lwiringPi
+//#include <stdio.h>
+//#include "wiringPi.h"
 import "C"
 
 // ... more stuff here...
