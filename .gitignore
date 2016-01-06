@@ -29,4 +29,5 @@ _testmain.go
 *.pem
 *.crt
 
+ext/wiringPi
 ext/pigpio
