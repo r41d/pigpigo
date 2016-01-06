@@ -1,12 +1,36 @@
 // Package gpigo provides GPIO support on the raspberry pi (2).
 package gpigo
 
-var pi int // controls only one raspberry pi right now
+const (
+	PIGPIO   int = 1
+	WIRINGPI     = 2
+	NATIVE       = 3 // maybe add native GPIO support in the future
+)
 
-// Initialize the GPIO interface
-func Initialize() {
-	pi = pigpio_start("", "")
-	return
+// specify the lib we use
+var lib int = 0
+
+// pigpio-lib-exclusive
+// controls only one raspberry pi right now
+var pi int
+
+func Initialize(lib2use int) {
+	if lib == 0 {
+		switch lib2use {
+		case PIGPIO:
+			lib = lib2use
+			pi = pigpio_start("", "")
+		case WIRINGPI:
+			lib = lib2use
+			wiringPiSetup() // always returns 0, according to documentation
+		case NATIVE:
+			panic("NATIVE not supported yet!")
+		default:
+			panic("Invalid Library!")
+		}
+	} else {
+		panic("Already Initialized!")
+	}
 }
 
 func Terminate() {

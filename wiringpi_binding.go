@@ -10,4 +10,26 @@ package gpigo
 //#include "wiringPi.h"
 import "C"
 
-// ... more stuff here...
+/*
+ * Setup Functions
+ */
+
+func wiringPiSetup() int {
+	// int wiringPiSetup (void) ;
+	return int(C.wiringPiSetup())
+}
+
+func wiringPiSetupGpio() int {
+	// int wiringPiSetupGpio (void) ;
+	return int(C.wiringPiSetupGpio())
+}
+
+func wiringPiSetupPhys() int {
+	// int wiringPiSetupPhys (void) ;
+	return int(C.wiringPiSetupPhys())
+}
+
+func wiringPiSetupSys() int {
+	// int wiringPiSetupSys (void) ;
+	return int(C.wiringPiSetupSys())
+}
