@@ -1,7 +1,7 @@
 package pigpiogo
 
 // Pin Values
-type PinValue int
+type PinValue uint
 
 const (
 	PI_LOW  PinValue = 0

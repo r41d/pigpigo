@@ -2,7 +2,7 @@ package pigpiogo
 
 // pin modes – make them private so they cannot be used on other
 // functions accidentially
-type PinMode int
+type PinMode uint
 
 const (
 	PI_INPUT  PinMode = 0
