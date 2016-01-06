@@ -1,4 +1,4 @@
-package pigpiogo
+package gpigo
 
 type Pullupdown int
 

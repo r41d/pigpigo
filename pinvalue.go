@@ -1,4 +1,4 @@
-package pigpiogo
+package gpigo
 
 // Pin Values
 type PinValue uint

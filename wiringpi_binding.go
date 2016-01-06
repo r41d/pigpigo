@@ -1,5 +1,5 @@
-// Package pigpiogo provides GPIO support on the raspberry pi (2).
-package pigpiogo
+// Package gpigo provides GPIO support on the raspberry pi (2).
+package gpigo
 
 // Automatically fetch and build pigpio:
 //go:generate ./ext/makelib_wiringpi.sh

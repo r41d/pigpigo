@@ -1,5 +1,5 @@
-// Package pigpiogo provides GPIO support on the raspberry pi (2).
-package pigpiogo
+// Package gpigo provides GPIO support on the raspberry pi (2).
+package gpigo
 
 var pi int // controls only one raspberry pi right now
 

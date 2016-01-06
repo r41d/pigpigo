@@ -1,4 +1,4 @@
-package pigpiogo
+package gpigo
 
 // pin modes – make them private so they cannot be used on other
 // functions accidentially
