@@ -1,7 +1,7 @@
 // Package gpigo provides GPIO support on the raspberry pi (2).
 package gpigo
 
-// Automatically fetch and build wiringpi:
+// Automatically fetch and build pigpio:
 //go:generate ./ext/makelib_pigpio.sh
 
 /*
@@ -274,11 +274,32 @@ func get_pigpio_version(pi int) uint32 {
 //	int bb_i2c_open(int pi, unsigned SDA, unsigned SCL, unsigned baud)
 //	int bb_i2c_close(int pi, unsigned SDA)
 //	int bb_i2c_zip(int pi, unsigned SDA, char* inBuf, unsigned inLen, char* outBuf, unsigned outLen)
-//	int spi_open(int pi, unsigned spi_channel, unsigned baud, unsigned spi_flags)
-//	int spi_close(int pi, unsigned handle)
-//	int spi_read(int pi, unsigned handle, char *buf, unsigned count);
-//	int spi_write(int pi, unsigned handle, char* buf, unsigned count)
-//	int spi_xfer(int pi, unsigned handle, char* txBuf, char* rxBuf, unsigned count)
+
+func spi_open(pi int, spi_channel uint, baud uint, spi_flags uint) int {
+	//int spi_open(int pi, unsigned spi_channel, unsigned baud, unsigned spi_flags)
+	return int(C.spi_open(C.int(pi), C.uint(spi_channel), C.uint(baud), C.uint(spi_flags)))
+}
+
+func spi_close(pi int, handle uint) int {
+	//int spi_close(int pi, unsigned handle)
+	return int(C.spi_close(C.int(pi), C.uint(handle)))
+}
+
+func spi_read(pi int, handle uint, buf string, count uint) int {
+	//int spi_read(int pi, unsigned handle, char *buf, unsigned count)
+	return int(C.spi_read(C.int(pi), C.uint(handle), C.CString(buf), C.uint(count)))
+}
+
+func spi_write(pi int, handle uint, buf string, count uint) int {
+	//int spi_write(int pi, unsigned handle, char* buf, unsigned count)
+	return int(C.spi_write(C.int(pi), C.uint(handle), C.CString(buf), C.uint(count)))
+}
+
+func spi_xfer(pi int, handle uint, txBuf string, rxBuf string, count uint) int {
+	//int spi_xfer(int pi, unsigned handle, char* txBuf, char* rxBuf, unsigned count)
+	return int(C.spi_xfer(C.int(pi), C.uint(handle), C.CString(txBuf), C.CString(rxBuf), C.uint(count)))
+}
+
 //	int serial_open(int pi, char* ser_tty, unsigned baud, unsigned ser_flags)
 //	int serial_close(int pi, unsigned handle)
 //	int serial_write_byte(int pi, unsigned handle, unsigned bVal)
