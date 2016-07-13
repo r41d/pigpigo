@@ -2,31 +2,34 @@
 package gpigo
 
 const (
-	PIGPIO      int = 0 // currently unsupported
-	PIGPIOD_IF      = 1 // currently unsupported
-	PIGPIOD_IF2     = 2
-	WIRINGPI        = 3 // support just includes initialization...
-	NATIVE          = 4 // maybe add native GPIO support in the future
+	WIRINGPI int = iota
+	PIGPIO
+	PIGPIOD_IF2 // PIGPIOD_IF unsupported because it's decprecated
 )
 
 // specify the lib we use
-var lib int = -1
+var libInUse int = -1
 
 // pigpio-lib-exclusive
 // controls only one raspberry pi right now
 var pi int
 
+////////////////////////////////////////////////////////////
+// INITIALIZATION
+////////////////////////////////////////////////////////////
+
 func Initialize(lib2use int) {
-	if lib < 0 {
+	if libInUse < 0 {
 		switch lib2use {
-		case PIGPIOD_IF2:
-			lib = lib2use
-			pi = pigpio_start("", "")
 		case WIRINGPI:
-			lib = lib2use
+			libInUse = lib2use
 			wiringPiSetup() // always returns 0, according to documentation
-		case NATIVE:
-			panic("NATIVE not supported yet!")
+		case PIGPIO:
+			libInUse = lib2use
+			panic("PIGPIO unsupported yet")
+		case PIGPIOD_IF2:
+			libInUse = lib2use
+			pi = pigpio_start("", "")
 		default:
 			panic("Invalid or yet unsupported Library!")
 		}
@@ -48,6 +51,10 @@ func PullUpDnControl(gpio uint, pud uint) int {
 	return set_pull_up_down(pi, gpio, pud)
 }
 
+///////////////////////////////////////////////////////////
+// BASIC PINS
+///////////////////////////////////////////////////////////
+
 // Gets the value of a given pins input, assuming the pin is configured as an input.
 func ReadPin(pin uint) int {
 	return gpio_read(pi, pin)
@@ -65,7 +72,10 @@ func Delay(ms uint) {
 	time_sleep(float64(ms) * 1000)
 }
 
-///// PWM
+///////////////////////////////////////////////////////////
+// PWM
+///////////////////////////////////////////////////////////
+
 func GetPwm(user_gpio uint) int {
 	return get_PWM_dutycycle(pi, user_gpio)
 }
@@ -78,7 +88,9 @@ func SetPwmRange(pin uint, rrange uint) int {
 	return set_PWM_range(pi, pin, rrange)
 }
 
-///// SPI
+///////////////////////////////////////////////////////////
+// SPI
+///////////////////////////////////////////////////////////
 
 func SpiOpen(spi_channel uint, baud uint) int {
 	var flags uint = 0
@@ -100,6 +112,12 @@ func SpiWrite(handle uint, buf string) int {
 func SpiXfer(handle uint, txBuf string, rxBuf string, count uint) int {
 	return spi_xfer(pi, handle, txBuf, rxBuf, count)
 }
+
+///////////////////////////////////////////////////////////
+// I2c
+///////////////////////////////////////////////////////////
+
+// ...
 
 //__________________________________________
 // TODO
