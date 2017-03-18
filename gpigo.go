@@ -1,17 +1,17 @@
 // Package gpigo provides GPIO support on the raspberry pi (2).
-package gpigo
+package pigpigo
 
 const (
-	WIRINGPI int = iota
-	PIGPIO
-	PIGPIOD_IF2 // PIGPIOD_IF unsupported because it's decprecated
+	PIGPIO int = iota
+	// PIGPIOD_IF unsupported because it's decprecated
+	PIGPIOD_IF2
 )
 
 // specify the lib we use
 var libInUse int = -1
 
-// pigpio-lib-exclusive
-// controls only one raspberry pi right now
+// Memorize the active Raspberry Pi
+// Can control only one Raspberry Pi at the moment
 var pi int
 
 ////////////////////////////////////////////////////////////
@@ -21,15 +21,15 @@ var pi int
 func Initialize(lib2use int) {
 	if libInUse < 0 {
 		switch lib2use {
-		case WIRINGPI:
-			libInUse = lib2use
-			wiringPiSetup() // always returns 0, according to documentation
 		case PIGPIO:
 			libInUse = lib2use
 			panic("PIGPIO unsupported yet")
 		case PIGPIOD_IF2:
 			libInUse = lib2use
 			pi = pigpio_start("", "")
+			if pi < 0 {
+				panic("Initializing PIGPIOD_IF2 failed! "+ string(pi))
+			}
 		default:
 			panic("Invalid or yet unsupported Library!")
 		}
@@ -118,14 +118,3 @@ func SpiXfer(handle uint, txBuf string, rxBuf string, count uint) int {
 ///////////////////////////////////////////////////////////
 
 // ...
-
-//__________________________________________
-// TODO
-// Implement the following basic functions:
-//
-// void pwmWrite(int pin, int value);
-//   0-1024
-//   not when in Sys mode (wiringPiSetup*)
-//   pin1 (BCM_GPIO18, phys 12)
-// analogRead(int pin); // need special board
-// analogWrite(int pin, int value); // need special board

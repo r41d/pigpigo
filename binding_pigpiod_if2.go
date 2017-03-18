@@ -1,5 +1,5 @@
 // Package gpigo provides GPIO support on the raspberry pi (2).
-package gpigo
+package pigpigo
 
 // Automatically fetch and build pigpio:
 //go:generate ./ext/makelib_pigpio.sh
